@@ -18,6 +18,21 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
+## Bootstrap the first admin
+
+Customer registration creates a regular user. To create the first admin, set
+`ADMIN_BOOTSTRAP_USERNAME`, `ADMIN_BOOTSTRAP_GMAIL`, and
+`ADMIN_BOOTSTRAP_PASSWORD` in the environment (use a password with at least 12
+characters), then run:
+
+```bash
+npx prisma db seed
+```
+
+The seed creates an `ADMIN` only when the admin table is empty. Later staff
+accounts are created by an authenticated admin through the admin registration
+flow; they default to `PRODUCT_MANAGER`.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
