@@ -486,6 +486,8 @@ app.get("/admin/user", async (req, res) => {
 app.get("/admin/users", async (req, res) => {
   try {
     const authToken = req.cookies.admin_token;
+    const search = req.query.search;
+    const sort = req.query.sort === "desc" ? "desc" : "asc";
     if (!authToken) {
       return res.status(401).json({
         message: "ยังไม่ได้ Login",
@@ -502,32 +504,39 @@ app.get("/admin/users", async (req, res) => {
       return res.status(404).json({ message: "User not Found" });
     }
     const users = await prisma.user.findMany({
+      where: {
+        buy: {
+          some: { item: { some: { menu: { name: { contains: search } } } } },
+        },
+      },
       select: {
         id: true,
         username: true,
         gmail: true,
         buy: {
-          select: {
-            id: true,
-            status: true,
-            createdAt: true,
-            updateAt: true,
-            item: {
-              select: {
-                quantity: true,
-                details: true,
-                menu: {
-                  select: {
-                    id: true,
-                    name: true,
-                    price: true,
-                    stock: true,
-                    type: true,
+          orderBy: { createdAt: sort },
+            select: {
+              id: true,
+              status: true,
+              createdAt: true,
+              updateAt: true,
+              item: {
+                select: {
+                  quantity: true,
+                  details: true,
+                  menu: {
+                    select: {
+                      id: true,
+                      name: true,
+                      price: true,
+                      stock: true,
+                      type: true,
+                    },
                   },
                 },
               },
             },
-          },
+          
         },
       },
     });

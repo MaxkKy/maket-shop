@@ -64,12 +64,23 @@ export default function History() {
           <option value="asc">เก่า ไป ใหม่</option>
         </select>
         <button>Search</button>
-        {post.map((buy) => (
-          <div key={buy.id}>
-            {buy.item
-              .filter((i) => i.menu.name.includes(appliedSearch))
-              .map((item) => (
-                <div key={item.menu.id}>
+        {post.map((buy) => {
+          const matchItem = buy.item.filter((i) =>
+            i.menu.name.includes(appliedSearch),
+          );
+          if(matchItem.length === 0){
+            return null
+          }
+          return (
+            <div
+              key={buy.id}
+              className="bg-neutral-primary-soft block max-w-sm p-6 border border-default rounded-base shadow-xs hover:bg-neutral-secondary-medium"
+            >
+              {matchItem.map((item) => (
+                <div
+                  key={item.menu.id}
+                  className="bg-neutral-primary-soft block max-w-sm p-6 border border-default rounded-base shadow-xs hover:bg-neutral-secondary-medium"
+                >
                   <h1>
                     สินค้า : {item.menu.name} ราคา : {item.menu.price} บาท
                   </h1>
@@ -87,10 +98,11 @@ export default function History() {
                 </div>
               ))}
 
-            <h1>สถานะ : {buy.status}</h1>
-            <button onClick={() => onDelete(buy.id)}>Delete</button>
-          </div>
-        ))}
+              <h1>สถานะ : {buy.status}</h1>
+              <button onClick={() => onDelete(buy.id)}>Delete</button>
+            </div>
+          );
+        })}
       </form>
     </div>
   );
